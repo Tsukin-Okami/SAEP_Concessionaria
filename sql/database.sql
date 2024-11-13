@@ -35,7 +35,7 @@ CREATE TABLE venda (
 	id int(11) AUTO_INCREMENT PRIMARY KEY,
     data timestamp NOT NULL,
     cliente_id int(11) NOT NULL,
-    automovel_id int(11) NOT NULL,
+    automovel_id int(11) NOT NULL UNIQUE,
     preco float NOT NULL,
     FOREIGN KEY (cliente_id) REFERENCES cliente(id),
     FOREIGN KEY (automovel_id) REFERENCES automovel(id)
