@@ -68,7 +68,7 @@
         }
     ?>
     <div class="container p-5 my-5 border">
-        <h1 class="h1">Venda de Automoveis</h1>
+        <h1 class="h1">Venda de Automoveis da Area <?php echo $_GET['area'] ?></h1>
         <a class="btn btn-primary" href="./">voltar</a>
     </div>
     <div class="container p-5 my-5 border">
