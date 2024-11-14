@@ -1,7 +1,3 @@
-body {
-    padding: 5vh 20vw;
-}
-
 .planta {
     display: grid;
     background-color: #F2F2F2;
@@ -13,26 +9,36 @@ body {
     padding: 10px;
 }
 
-.planta > button {
+.area {
     text-align: center;
 
-    padding: 20px 0;
+    padding: 0px 0;
     font-size: 30px;
 
     background-color: #FFFFFF;
     border: 2px solid #D8D8D8;
     border-radius: 4px;
-    
 }
 
-.planta > button:hover {
+.area:hover {
     /*background-color: #F2F2F2;*/
     /*color: black;*/
     border-color: red;
 }
 
-.planta > .alocado {
+.area-btn {
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    border: 0px;
+}
+
+.alocado {
     background-color: #0000FF;
+    color: #FFFFFF;
+}
+
+.alocado > btn {
     color: #FFFFFF;
 }
 

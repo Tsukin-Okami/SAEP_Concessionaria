@@ -17,7 +17,7 @@ class Automovel
                 return $result;
             }
 
-            echo "Sem dados";
+            //echo "Sem dados";
             return false;
         } catch (PDOException $e) {
             echo $e->getMessage() . "<br>";
@@ -40,7 +40,7 @@ class Automovel
                 return $result;
             }
 
-            echo "Sem dados";
+            //echo "Sem dados";
             return false;
         } catch (PDOException $e) {
             echo $e->getMessage() . "<br>";
@@ -63,7 +63,7 @@ class Automovel
                 return $result;
             }
 
-            echo "Sem dados";
+            //echo "Sem dados";
             return false;
         } catch (PDOException $e) {
             echo $e->getMessage() . "<br>";
@@ -86,7 +86,7 @@ class Automovel
                 return $result;
             }
 
-            echo "Sem dados";
+            //echo "Sem dados";
             return false;
         } catch (PDOException $e) {
             echo $e->getMessage() . "<br>";
@@ -109,13 +109,13 @@ class Automovel
             $stmt->execute();
 
             if ($stmt->rowCount() > 0) {
-                echo "Automovel vendido";
+                //echo "Automovel vendido";
             }
 
             return true;
         } catch (PDOException $e) {
             if ($e->getCode() == 23000) {
-                echo "Veiculo já vendido";
+                //echo "Veiculo já vendido";
             } else {
                 echo $e->getMessage() . "<br>";
             }

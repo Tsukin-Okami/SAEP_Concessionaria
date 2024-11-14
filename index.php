@@ -9,50 +9,69 @@
     <link rel="stylesheet" href="source/css/planta.css">
 </head>
 <body>
-    <h1>SAEP Concessionaria</h1>
-    <hr>
-    <div class="planta">
-        <!--
-        <button data-toggle="modal" data-target="#AreaModal" class="item1">1</button>
-        <button data-toggle="modal" data-target="#AreaModal" class="item2">2</button>
-        <button data-toggle="modal" data-target="#AreaModal" class="item3 alocado">3</button>  
-        <button data-toggle="modal" data-target="#AreaModal" class="item4">4</button>
-        <button data-toggle="modal" data-target="#AreaModal" class="item5">5</button>
-        <button data-toggle="modal" data-target="#AreaModal" class="item6">6</button>
-        <button data-toggle="modal" data-target="#AreaModal" class="item7 alocado">7</button>
-        <button data-toggle="modal" data-target="#AreaModal" class="item8">8</button>  
-        <button data-toggle="modal" data-target="#AreaModal" class="item9">9</button>
-        <button data-toggle="modal" data-target="#AreaModal" class="item10">10</button>
-        -->
-
-        <button data-toggle="modal" data-target="#AreaModal" class="item1">1</button>
-        <button data-toggle="modal" data-target="#AreaModal" class="item2">2</button>
-        <button data-toggle="modal" data-target="#AreaModal" class="item3 alocado">3</button>  
-        <button data-toggle="modal" data-target="#AreaModal" class="item4">4</button>
-        <button data-toggle="modal" data-target="#AreaModal" class="item5">5</button>
-        <button data-toggle="modal" data-target="#AreaModal" class="item6">6</button>
-        <button data-toggle="modal" data-target="#AreaModal" class="item7 alocado">7</button>
-        <button data-toggle="modal" data-target="#AreaModal" class="item8">8</button>  
-        <button data-toggle="modal" data-target="#AreaModal" class="item9">9</button>
-        <button data-toggle="modal" data-target="#AreaModal" class="item10">10</button>
+    <div class="container p-5 my-5 border">
+        <h1 class="h1">SAEP Concessionaria</h1>
     </div>
-
-    <!-- MODAL -->
-    <div id="AreaModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Modal Header</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Some text in the modal.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
-            </div>
+    <div class="container p-2 my-5 border">
+        <div class="planta">
+            <?php 
+                include "class/model/taghtml.php";
+                include "class/model/connection.php";
+                include "class/model/automovel.php";
+    
+                function createArea(int $number, bool $isAlocado) {
+                    if ($isAlocado == true) {
+                        $alocado = "alocado";
+                    } else {
+                        $alocado = "";
+                    }
+    
+                    // <input required>
+                    $formInput = new tagHtml;
+                    $formInput->setTag("input", true);
+                    $formInput->addAtribute("type","hidden");
+                    $formInput->addAtribute("name","area");
+                    $formInput->addAtribute("value","$number");
+    
+                    // <button> {number} </button>
+                    $formButton = new tagHtml;
+                    $formButton->setTag("button");
+                    $formButton->setValue("$number");
+                    $formButton->addAtribute("class","area-btn");
+                    $formButton->addAtribute("type","submit");
+    
+                    // { <input required><button>{number}</button> }
+                    $formInside = $formInput->mount() . $formButton->mount();
+    
+                    // <form> {value} </form>
+                    $formTag = new tagHtml;
+                    $formTag->setTag("form");
+                    $formTag->addAtribute("class","item$number area $alocado");
+                    $formTag->addAtribute("action","venda.php");
+                    $formTag->addAtribute("method","get");
+                    $formTag->setValue($formInside);
+    
+                    return $formTag->mount();
+                }
+    
+                $automovel = new Automovel;
+                $planta = "";
+    
+                for ($i=1; $i < 11; $i++) { 
+                    $lista = $automovel->getAutomoveisArea($i);
+                    
+                    if (is_array($lista)) {
+                        $conta = count($lista);
+                    } else {
+                        $conta = 0;
+                    }
+                    
+                    $isAlocado = ($conta > 0);
+                    $planta .= createArea($i, $isAlocado);
+                }
+    
+                echo $planta;
+            ?>
         </div>
     </div>
 </body>
