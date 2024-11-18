@@ -16,55 +16,89 @@
         include "class/model/connection.php";
         include "class/model/automovel.php";
         include "class/model/cliente.php";
+        include "class/model/venda.php";
+
+        $alert = NULL;
+        function SetAlert(string $type, string $message) {
+            $newTag = new tagHtml;
+            $newTag->setTag("div");
+            $newTag->addAtribute("class","alert alert-$type");
+            $newTag->setValue($message);
+            
+            $alert = $newTag->mount();
+        }
 
         $automovel = new Automovel;
         $lista_automovel = $automovel->getAutomoveisArea($_GET['area']);
         
+        $venda = new Venda;
+        $lista_vendas = $venda->getAreaVendas($_GET['area']);
+
+        // OPCOES AUTOMOVEL E CLIENTES
         if (is_array($lista_automovel)) {
             $opt_automovel = "";
 
-            foreach ($lista_automovel as $key => $value) {
-                $newTag = new tagHtml;
-                $newTag->setTag("option");
-                $newTag->setValue($value['nome']);
-                $newTag->addAtribute("value",$value['id']);
-                $opt_automovel .= $newTag->mount();
-            }
-
-            $cliente = new Cliente;
-            $lista_cliente = $cliente->getClientes();
-            $opt_cliente = "";
-
-            if (is_array($lista_cliente)) {
-                foreach ($lista_cliente as $key => $value) {
+            // verifica se venda é mesma que a quantidade de automoveis
+            if (is_array($lista_vendas) && count($lista_automovel) == count($lista_vendas)) {
+                SetAlert( "warning", "Todos os carros foram vendidos!");
+            } else {
+                // OPCOES AUTOMOVEIS
+                foreach ($lista_automovel as $key => $value) {
+                    $isVendido = false;
+    
+                    if (is_array($lista_vendas)) {
+                        foreach ($lista_vendas as $keyid => $value2) {
+                            // verifica se há venda do veiculo especifico antes de adiciona-lo
+                            if ($value2['automovel_id'] == $value['id']) {
+                                // veiculo foi vendido
+                                $isVendido = true;
+                                break;
+                            }
+                        }
+                    }
+    
+                    if ($isVendido == true) {
+                        continue;
+                    }
+    
                     $newTag = new tagHtml;
                     $newTag->setTag("option");
-                    $newTag->setValue($value['nome'] . " " . $value['sobrenome']);
+                    $newTag->setValue($value['nome']);
                     $newTag->addAtribute("value",$value['id']);
-                    $opt_cliente .= $newTag->mount();
+                    $opt_automovel .= $newTag->mount();
+                }
+    
+                // OPCOES CLIENTES
+                $cliente = new Cliente;
+                $lista_cliente = $cliente->getClientes();
+                $opt_cliente = "";
+    
+                if (is_array($lista_cliente)) {
+                    foreach ($lista_cliente as $key => $value) {
+                        $newTag = new tagHtml;
+                        $newTag->setTag("option");
+                        $newTag->setValue($value['nome'] . " " . $value['sobrenome']);
+                        $newTag->addAtribute("value",$value['id']);
+                        $opt_cliente .= $newTag->mount();
+                    }
                 }
             }
+        } else {
+            SetAlert( "error", "Não há carros alocados para venda.");
         }
 
+        // VENDA POST
         if (isset($_POST) && isset($_POST['automoveis']) && isset($_POST['clientes'])) {
             $automoveis_id = $_POST['automoveis'];
             $cliente_id = $_POST['clientes'];
 
             $result_venda = $automovel->venderAutomovel($automoveis_id, $cliente_id);
             //echo $result_venda;
-            $newTag = new tagHtml;
-            $newTag->setTag("div");
             
-            if ($result_venda == true) {
-                $result_venda = "Venda efetuada com sucesso!";
-                $newTag->addAtribute("class","alert alert-success");
-            } else {
-                $result_venda = "O carro já foi vendido!";
-                $newTag->addAtribute("class","alert alert-warning");
-            }
-            
-            $newTag->setValue($result_venda);
-            $result_venda = $newTag->mount();
+            SetAlert(
+                $result_venda ? "success" : "warning", 
+                $result_venda ? "Venda efetuada com sucesso!" : "O carro já foi vendido!"
+            );
         }
     ?>
     <div class="container p-5 my-5 border">
@@ -90,7 +124,7 @@
             <div class="mb-3">
                 <button class="btn btn-outline-primary" type="submit">Vender</button>
             </div>
-            <?php if (isset($result_venda)) { echo $result_venda; }; ?>
+            <?php if (isset($alert)) { echo $alert; }; ?>
         </form>
     </div>
 </body>

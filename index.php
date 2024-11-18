@@ -18,6 +18,7 @@
                 include "class/model/taghtml.php";
                 include "class/model/connection.php";
                 include "class/model/automovel.php";
+                include "class/model/venda.php";
     
                 function createArea(int $number, bool $isAlocado) {
                     if ($isAlocado == true) {
@@ -55,18 +56,27 @@
                 }
     
                 $automovel = new Automovel;
+                $venda = new Venda;
+                
                 $planta = "";
     
                 for ($i=1; $i < 11; $i++) { 
-                    $lista = $automovel->getAutomoveisArea($i);
-                    
-                    if (is_array($lista)) {
-                        $conta = count($lista);
+                    $lista_automoveis = $automovel->getAutomoveisArea($i);
+                    $lista_vendas = $venda->getAreaVendas($i);
+
+                    if (is_array($lista_automoveis)) {
+                        $lista_automoveis = count($lista_automoveis);
                     } else {
-                        $conta = 0;
+                        $lista_automoveis = 0;
                     }
                     
-                    $isAlocado = ($conta > 0);
+                    if (is_array($lista_vendas)) {
+                        $lista_vendas = count($lista_vendas);
+                    } else {
+                        $lista_vendas = 0;
+                    }
+
+                    $isAlocado = ($lista_automoveis > 0) && ($lista_vendas < $lista_automoveis);
                     $planta .= createArea($i, $isAlocado);
                 }
     
