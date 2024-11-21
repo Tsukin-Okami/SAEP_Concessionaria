@@ -18,20 +18,21 @@
         include "class/model/cliente.php";
         include "class/model/venda.php";
 
-        $alert = NULL;
+        $alert = null;
         function SetAlert(string $type, string $message) {
             $newTag = new tagHtml;
             $newTag->setTag("div");
             $newTag->addAtribute("class","alert alert-$type");
             $newTag->setValue($message);
             
+            global $alert;
             $alert = $newTag->mount();
         }
-
-        $automovel = new Automovel;
-        $lista_automovel = $automovel->getAutomoveisArea($_GET['area']);
         
+        $automovel = new Automovel;
         $venda = new Venda;
+        
+        $lista_automovel = $automovel->getAutomoveisArea($_GET['area']);
         $lista_vendas = $venda->getAreaVendas($_GET['area']);
 
         // OPCOES AUTOMOVEL E CLIENTES
@@ -84,7 +85,7 @@
                 }
             }
         } else {
-            SetAlert( "error", "Não há carros alocados para venda.");
+            SetAlert( "danger", "Não há carros alocados para venda.");
         }
 
         // VENDA POST
@@ -99,6 +100,9 @@
                 $result_venda ? "success" : "warning", 
                 $result_venda ? "Venda efetuada com sucesso!" : "O carro já foi vendido!"
             );
+
+            //Set_OpcoesAutomovel();
+            //header("Location:./venda.php?area={$_GET['area']}");
         }
     ?>
     <div class="container p-5 my-5 border">
@@ -122,9 +126,11 @@
                 </div>
             </div>
             <div class="mb-3">
+                <?php if (isset($alert)) { echo $alert; }; ?>
+            </div>
+            <div class="mb-3">
                 <button class="btn btn-outline-primary" type="submit">Vender</button>
             </div>
-            <?php if (isset($alert)) { echo $alert; }; ?>
         </form>
     </div>
 </body>
